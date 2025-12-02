@@ -24,7 +24,7 @@ type server interface {
 func main() {
 	var (
 		port        = flag.Int("port", 8080, "The service port")
-		jaegeraddr  = flag.String("jaeger", "jaeger:6831", "Jaeger address")
+		jaegeraddr  = flag.String("jaeger", "", "Jaeger address")
 		profileaddr = flag.String("profileaddr", "profile:8080", "Profile service addr")
 		geoaddr     = flag.String("geoaddr", "geo:8080", "Geo server addr")
 		rateaddr    = flag.String("rateaddr", "rate:8080", "Rate server addr")
@@ -38,7 +38,12 @@ func main() {
 	}
 
 	var srv server
+	if len(os.Args) < 2 {
+		log.Fatalf("usage: %s <cmd> [flags]\ncommands: geo, rate, profile, search, frontend", os.Args[0])
+	}
 	var cmd = os.Args[1]
+	// 解析剩余参数（跳过命令）
+	flag.CommandLine.Parse(os.Args[2:])
 
 	switch cmd {
 	case "geo":

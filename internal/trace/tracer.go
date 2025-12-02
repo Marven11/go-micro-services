@@ -1,10 +1,9 @@
 package trace
 
 import (
-	"fmt"
 	"time"
 
-	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go"
 	"github.com/uber/jaeger-client-go/config"
 )
 
@@ -24,7 +23,8 @@ func New(serviceName, host string) (opentracing.Tracer, error) {
 
 	tracer, _, err := cfg.New(serviceName)
 	if err != nil {
-		return nil, fmt.Errorf("new tracer error: %v", err)
+		// 如果Jaeger不可用，返回noop tracer
+		return opentracing.NoopTracer{}, nil
 	}
 	return tracer, nil
 }
